@@ -36,8 +36,10 @@ end
 def normalize_url(url)
   origin_url = `git config --get remote.origin.url`.chomp
 
-  if origin_url =~ /^([^:\/]+):([^:]+)/
-    origin_url = "ssh://#{$1}/#{$2}"
+  unless origin_url =~ /^\w+:\/\//
+    if origin_url =~ /^([^:\/]+):([^:]+)/
+      origin_url = "ssh://#{$1}/#{$2}"
+    end
   end
 
   require 'uri'
