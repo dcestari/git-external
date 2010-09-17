@@ -51,7 +51,7 @@ def init_external(url, path)
   unless File.directory? "#{path}/.git"
     File.makedirs File.dirname(path)
     url = normalize_url url
-    exec "git clone #{url} #{path}"
+    system "git clone #{url} #{path}"
   end
 end
 
@@ -78,6 +78,7 @@ end
 
 def command_init
   $configurations.each do |name, config|
+    puts name
     init_external config["url"], config["path"]
   end
 end
