@@ -1,0 +1,61 @@
+html, body
+{
+  margin: 0;
+  padding: 0;
+}
+
+body
+{
+  font-family: Tahoma, Arial, Verdana, sans-serif;
+  background-color: gray;
+  margin-bottom: 100px;
+}
+
+.container
+{
+  width: 60%;
+  margin: 0 auto;
+  text-align: center;
+  color: white;
+}
+
+.section
+{
+  text-align: left;
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+  margin: 20px 0;
+}
+
+.section p
+{
+  color: gray;
+  font-size: 90%;
+}
+
+.section ol
+{
+  color: #333333;
+  font-size: 90%;
+}
+
+pre
+{
+  background-color: black;
+  color: white;
+  font-family: monospace;
+  display: block;
+  padding: 10px 0px;
+}
+
+/* taken from: http://users.tkk.fi/tkarvine/pre-wrap-css3-mozilla-opera-ie.html */
+/* Copyright 2004-09-12 Tero Karvinen www.iki.fi/karvinen. GNU Free Documentation License */
+/* Browser specific (not valid) styles to make preformatted text wrap */
+pre { 
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}

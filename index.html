@@ -1,11 +1,89 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
+    <meta name="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/main.css">
     <title>Git External</title>
   </head>
   <body>
-    <h1>Git External</h1>
-    <p>An alternative to <em>git submodule</em>. More like the <em>git</em> version of <em>svn:external</em></p>
+    <div class="container">
+      <h1>Git External</h1>
+      <p>An alternative to <em>git submodule</em>. More like the <em>git</em> version of <em>svn:external</em></p>
+      
+      <div class="section">
+        <h2>What?</h2>
+        <p>
+          <em>git external</em> is a tool for including external repositories inside of a <em>super repository</em>
+          or <em>main repository</em>. Is very similar to <em>git submodule</em> since it helps keeping some
+          dependencies or sub-projects in different repositories and reuse them in many projects.
+        </p>
+        <p>
+          <em>git external</em> intends to mimic the behavior of <em>svn:externals</em>, providing an updatable
+          reference to an external repository which the main repository doesn't need to know about.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>Why?</h2>
+        <p>
+          Git has something called <em>git submodule</em> which allows a repository to have many
+          <em>modules</em>, all of them are a git repository on their own (meaning they have a <em>.git/</em>
+          directory and everything).
+        </p>
+        <p>
+          The problem is each <em>module</em> has a commit id associated with it and every time the
+          <em>module</em> is updated (by issuing a <em>git pull</em> inside the <em>module</em>) this
+          causes a change on the <em>supermodule</em> therefor forcing <strong>you</strong> to make a
+          new commit only for updating what is sometimes a dependency.
+          <br/>
+          <em>git submodule</em> is a great tool, but it's not for everyone, neither is <em>git external</em>.
+        </p>
+      </div>
+      <div class="section">
+        <h2>How?</h2>
+        <p>
+          <em>git external</em> stores a file in the root of the repository called <em>.gitexternals</em>
+          with a format very similar to the <em>.gitmodules</em> from <em>git submodule</em> (if not almost
+          identical). This file keeps the information of the externals (meaning <em>path</em> and <em>url</em>).
+        </p>
+        <p>
+          Each external is really a clone of the repository specified to <em>git external add</em> so <strong>you</strong>
+          can do pretty much everything you'd do on a normal git repository inside an external.
+        </p>
+        <p>
+          The <em>path</em> where the external's clone resides is added to the <em>.gitignore</em> file
+          in order to keep it <strong>out of your way</strong> while you get your work done.
+        </p>
+      </div>
+      <div class="section">
+        <h2>Getting Started</h2>
+        <p>
+          <em>git external</em> comes bundled as a <em>ruby</em> <em>gem</em> so installation is pretty straight forward.
+        </p>
+        <ol>
+          <li>
+            install the <em>gem</em>:
+            <pre>  ~$ git install git-external</pre>
+          </li>
+          <li>
+            add an <em>external</em> to your repository:
+            <pre>  ~some-repo$ git external add /path/to/other/repo.git some/directory</pre>
+          </li>
+          <li>
+            commit the change to <em>.gitignore</em> and <em>.gitexternals</em> so other can have this external too:
+            <pre>  ~some-repo$ git commit .gitignore .gitexternals -m "Add new external /path/to/other/repo.git on some/directory"</pre>
+          </li>
+          <li>
+            initialize the <em>external</em>s on your repository:
+            <pre>  ~some-repo$ git external init</pre>
+          </li>
+          <li>
+            and, eventually, update your <em>external</em>s:
+            <pre>  ~some-repo$ git external update</pre>
+          </li>
+        </ol>
+      </div>
+    </div>
   </body>
 </html>
 
