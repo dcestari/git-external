@@ -11,17 +11,17 @@
     </a>
     <div class="container">
       <h1>Git External</h1>
-      <p>An alternative to <em>git submodule</em>. More like the <em>git</em> version of <em>svn:external</em></p>
+      <p>An alternative to <code>git submodule</code>. More like the <code>git</code> version of <code>svn:external</code></p>
       
       <div class="section">
         <h2>What?</h2>
         <p>
-          <em>git external</em> is a tool for including external repositories inside of a <em>super repository</em>
-          or <em>main repository</em>. Is very similar to <em>git submodule</em> since it helps keeping some
+          <code>git external</code> is a tool for including external repositories inside of a <em>super repository</em>
+          or <em>main repository</em>. Is very similar to <code>git submodule</code> since it helps keeping some
           dependencies or sub-projects in different repositories and reuse them in many projects.
         </p>
         <p>
-          <em>git external</em> intends to mimic the behavior of <em>svn:externals</em>, providing an updatable
+          <code>git external</code> intends to mimic the behavior of <code>svn:externals</code>, providing an updatable
           reference to an external repository which the main repository doesn't need to know about.
         </p>
       </div>
@@ -29,43 +29,43 @@
       <div class="section">
         <h2>Why?</h2>
         <p>
-          Git has something called <em>git submodule</em> which allows a repository to have many
-          <em>modules</em>, all of them are a git repository on their own (meaning they have a <em>.git/</em>
+          Git has something called <code>git submodule</code> which allows a repository to have many
+          <em>modules</em>, all of them are a git repository on their own (meaning they have a <code>.git/</code>
           directory and everything).
         </p>
         <p>
           The problem is each <em>module</em> has a commit id associated with it and every time the
-          <em>module</em> is updated (by issuing a <em>git pull</em> inside the <em>module</em>) this
+          <em>module</em> is updated (by issuing a <code>git pull</code> inside the <em>module</em>) this
           causes a change on the <em>supermodule</em> therefor forcing <strong>you</strong> to make a
           new commit only for updating what is sometimes a dependency.
           <br/>
-          <em>git submodule</em> is a great tool, but it's not for everyone, neither is <em>git external</em>.
+          <code>git submodule</code> is a great tool, but it's not for everyone, neither is <code>git external</code>.
         </p>
       </div>
       <div class="section">
         <h2>How?</h2>
         <p>
-          <em>git external</em> stores a file in the root of the repository called <em>.gitexternals</em>
-          with a format very similar to the <em>.gitmodules</em> from <em>git submodule</em> (if not almost
-          identical). This file keeps the information of the externals (meaning <em>path</em> and <em>url</em>).
+          <code>git external</code> stores a file in the root of the repository called <code>.gitexternals</code>
+          with a format very similar to the <code>.gitmodules</code> from <code>git submodule</code> (if not almost
+          identical). This file keeps the information of the externals (meaning <code>path</code> and <code>url</code>).
         </p>
         <p>
-          Each external is really a clone of the repository specified to <em>git external add</em> so <strong>you</strong>
+          Each external is really a clone of the repository specified to <code>git external add</code> so <strong>you</strong>
           can do pretty much everything you'd do on a normal git repository inside an external.
         </p>
         <p>
-          The <em>path</em> where the external's clone resides is added to the <em>.gitignore</em> file
+          The <code>path</code> where the external's clone resides is added to the <code>.gitignore</code> file
           in order to keep it <strong>out of your way</strong> while you get your work done.
         </p>
       </div>
       <div class="section">
         <h2>Getting Started</h2>
         <p>
-          <em>git external</em> comes bundled as a <em>ruby</em> <em>gem</em> so installation is pretty straight forward.
+          <code>git external</code> comes bundled as a <code>ruby</code> <code>gem</code> so installation is pretty straight forward.
         </p>
         <ol>
           <li>
-            install the <em>gem</em>:
+            install the <code>gem</code>:
             <pre>  ~$ git install git-external</pre>
           </li>
           <li>
@@ -73,7 +73,7 @@
             <pre>  ~some-repo$ git external add /path/to/other/repo.git some/directory</pre>
           </li>
           <li>
-            commit the change to <em>.gitignore</em> and <em>.gitexternals</em> so other can have this external too:
+            commit the change to <code>.gitignore</code> and <code>.gitexternals</code> so other can have this external too:
             <pre>  ~some-repo$ git commit .gitignore .gitexternals -m "Add new external /path/to/other/repo.git on some/directory"</pre>
           </li>
           <li>
