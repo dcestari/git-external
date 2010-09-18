@@ -9,6 +9,9 @@ body
   font-family: Tahoma, Arial, Verdana, sans-serif;
   background-color: gray;
   margin-bottom: 100px;
+  background: -webkit-gradient(linear, left top, left bottom, from(gray), to(#ccc));
+  background: -moz-linear-gradient(top,  gray,  #ccc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#808080', endColorstr='#cccccc');
 }
 
 .container
@@ -21,6 +24,10 @@ body
 
 .section
 {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  behavior: url(border-radius.htc);
   text-align: left;
   background-color: white;
   color: black;
