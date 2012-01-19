@@ -56,6 +56,11 @@ pre
   padding: 10px 0px;
 }
 
+footer
+{
+  color: #333333;
+}
+
 /* taken from: http://users.tkk.fi/tkarvine/pre-wrap-css3-mozilla-opera-ie.html */
 /* Copyright 2004-09-12 Tero Karvinen www.iki.fi/karvinen. GNU Free Documentation License */
 /* Browser specific (not valid) styles to make preformatted text wrap */
