@@ -56,9 +56,10 @@ pre
   padding: 10px 0px;
 }
 
-footer
+.footer
 {
   color: #333333;
+  font-size: 80%;
 }
 
 /* taken from: http://users.tkk.fi/tkarvine/pre-wrap-css3-mozilla-opera-ie.html */
