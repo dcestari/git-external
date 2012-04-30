@@ -6,7 +6,7 @@ $ignore_file = "#{$root_dir}/.gitignore"
 $configurations = {}
 
 def usage
-  puts "Usage: git external add <repository-url> <path>"
+  puts "Usage: git external add <repository-url> <path> [<branch>]"
   puts "   or: git external init [--] [<path>...]"
   puts "   or: git external update [--] [<path>...]"
 end
@@ -52,31 +52,34 @@ def normalize_url(url)
   end
 end
 
-def init_external(url, path)
+def init_external(url, path, branch='master')
   require 'ftools'
   unless File.directory? "#{path}/.git"
     File.makedirs File.dirname(path)
     url = normalize_url url
     system "git clone #{url} #{path}"
+    system "cd #{path}; git checkout --track -b #{branch} origin/#{branch}"
   end
 end
 
-def update_external(url, path)
+def update_external(url, path, branch='master')
   require 'ftools'
   if File.directory? "#{path}/.git"
-    `cd #{path}; git pull origin master`
+   `cd #{path}; git pull origin #{branch}`
   end
 end
 
-def command_add(url, path)
+def command_add(url, path, branch='master')
   `git config -f #{$externals_file} --add external.#{path}.path #{path}`
   `git config -f #{$externals_file} --add external.#{path}.url #{url}`
+  `git config -f #{$externals_file} --add external.#{path}.branch #{branch}`
   `echo "#{path}" >> #{$ignore_file}`
 end
 
 def command_rm(path)
   `git config -f #{$externals_file} --unset external.#{path}.path`
   `git config -f #{$externals_file} --unset external.#{path}.url`
+  `git config -f #{$externals_file} --unset external.#{path}.branch`
   `git config -f #{$externals_file} --remove-section external.#{path}`
   `perl -pi -e 's/\\Q#{path.gsub(/\//, '\/')}\\E\n//g' #{$ignore_file}`
   File.delete $externals_file if `wc -l #{$externals_file}`.chomp.to_i == 0
@@ -85,13 +88,13 @@ end
 def command_init
   $configurations.each do |name, config|
     puts name
-    init_external config["url"], config["path"]
+    init_external config["url"], config["path"], config["branch"]
   end
 end
 
 def command_update
   $configurations.each do |name, config|
-    update_external config["url"], config["path"]
+    update_external config["url"], config["path"], config["branch"]
   end
 end
 
@@ -100,7 +103,7 @@ load_configuration
 command=ARGV[0]
 
 case command
-when "add" then command_add ARGV[1], ARGV[2]
+when "add" then command_add ARGV[1], ARGV[2], ARGV[3] || "master"
 when "rm" then command_rm ARGV[1]
 when "init" then command_init
 when "update" then command_update
