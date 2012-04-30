@@ -6,7 +6,7 @@ $ignore_file = "#{$root_dir}/.gitignore"
 $configurations = {}
 
 def usage
-  puts "Usage: git external add <repository-url> <path> <branch>"
+  puts "Usage: git external add <repository-url> <path> [<branch>]"
   puts "   or: git external init [--] [<path>...]"
   puts "   or: git external update [--] [<path>...]"
 end
@@ -52,31 +52,27 @@ def normalize_url(url)
   end
 end
 
-def init_external(url, path, branch)
+def init_external(url, path, branch='master')
   require 'ftools'
   unless File.directory? "#{path}/.git"
     File.makedirs File.dirname(path)
     url = normalize_url url
     system "git clone #{url} #{path}"
-    system "cd #{path}; git checkout --track -b #{branch} origin/#{branch}" unless branch.nil?
+    system "cd #{path}; git checkout --track -b #{branch} origin/#{branch}"
   end
 end
 
-def update_external(url, path, branch)
+def update_external(url, path, branch='master')
   require 'ftools'
   if File.directory? "#{path}/.git"
-    if branch
-      `cd #{path}; git pull origin #{branch}`
-    else
-      `cd #{path}; git pull origin master`
-    end
+   `cd #{path}; git pull origin #{branch}`
   end
 end
 
-def command_add(url, path, branch)
+def command_add(url, path, branch='master')
   `git config -f #{$externals_file} --add external.#{path}.path #{path}`
   `git config -f #{$externals_file} --add external.#{path}.url #{url}`
-  `git config -f #{$externals_file} --add external.#{path}.branch #{branch}` unless branch.nil?
+  `git config -f #{$externals_file} --add external.#{path}.branch #{branch}`
   `echo "#{path}" >> #{$ignore_file}`
 end
 
@@ -107,7 +103,7 @@ load_configuration
 command=ARGV[0]
 
 case command
-when "add" then command_add ARGV[1], ARGV[2], ARGV[3]
+when "add" then command_add ARGV[1], ARGV[2], ARGV[3] || "master"
 when "rm" then command_rm ARGV[1]
 when "init" then command_init
 when "update" then command_update
