@@ -70,6 +70,7 @@ def update_external(url, path, branch='master')
 end
 
 def command_add(url, path, branch='master')
+  command_rm(path)
   `git config -f #{$externals_file} --add external.#{path}.path #{path}`
   `git config -f #{$externals_file} --add external.#{path}.url #{url}`
   `git config -f #{$externals_file} --add external.#{path}.branch #{branch}`
@@ -77,12 +78,16 @@ def command_add(url, path, branch='master')
 end
 
 def command_rm(path)
-  `git config -f #{$externals_file} --unset external.#{path}.path`
-  `git config -f #{$externals_file} --unset external.#{path}.url`
-  `git config -f #{$externals_file} --unset external.#{path}.branch`
-  `git config -f #{$externals_file} --remove-section external.#{path}`
-  `perl -pi -e 's/\\Q#{path.gsub(/\//, '\/')}\\E\n//g' #{$ignore_file}`
-  File.delete $externals_file if `wc -l #{$externals_file}`.chomp.to_i == 0
+  if File.file? $externals_file
+    `git config -f #{$externals_file} --unset external.#{path}.path`
+    `git config -f #{$externals_file} --unset external.#{path}.url`
+    `git config -f #{$externals_file} --unset external.#{path}.branch`
+    `git config -f #{$externals_file} --remove-section external.#{path} > /dev/null 2>&1`
+    File.delete $externals_file if `wc -l #{$externals_file}`.chomp.to_i == 0
+  end
+  if File.file? $ignore_file
+    `perl -pi -e 's/\\Q#{path.gsub(/\//, '\/')}\\E\n//g' #{$ignore_file}`
+  end
 end
 
 def command_init
