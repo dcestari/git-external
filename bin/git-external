@@ -9,6 +9,7 @@ def usage
   puts "Usage: git external add <repository-url> <path> [<branch>]"
   puts "   or: git external init [--] [<path>...]"
   puts "   or: git external update [--] [<path>...]"
+  puts "   or: git external cmd '<command>'"
 end
 
 def load_configuration
@@ -98,6 +99,13 @@ def command_update
   end
 end
 
+def command_cmd(cmd)
+  $configurations.each do |name, config|
+    path = config['path']
+    system("echo #{path}; cd #{path}; #{cmd}")
+  end
+end
+
 load_configuration
 
 command=ARGV[0]
@@ -107,6 +115,7 @@ when "add" then command_add ARGV[1], ARGV[2], ARGV[3] || "master"
 when "rm" then command_rm ARGV[1]
 when "init" then command_init
 when "update" then command_update
+when "cmd" then command_cmd ARGV[1]
 else usage
 end
 
