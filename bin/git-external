@@ -7,6 +7,7 @@ $configurations = {}
 
 def usage
   puts "Usage: git external add <repository-url> <path> [<branch>]"
+  puts "   or: git external status"
   puts "   or: git external init [--] [<path>...]"
   puts "   or: git external update [--] [<path>...]"
 end
@@ -69,6 +70,47 @@ def update_external(url, path, branch='master')
   end
 end
 
+def execute(cmd)
+  values = []
+  IO.popen(cmd) do |f|
+    tmp = f.gets
+    values.push(tmp.gsub(/\r/, '').gsub(/\n/, '')) unless tmp.nil?
+  end
+  return $?.exitstatus, values
+end
+
+def command_status
+  ok = 0
+  broken = 0
+  $configurations.each do |name, config|
+    branch = config["branch"]
+    url = config["url"]
+    path = config["path"]
+
+    gitBranchExit, gitBranch = execute("cd #{path} && git config \"branch.$(git symbolic-ref HEAD --short).merge\" | sed \"s/refs\\/heads\\///g\"")
+    gitRemoteExit, gitRemote = execute("cd #{path} && git config \"remote.$(git config \"branch.$(git symbolic-ref HEAD --short).remote\").url\"");
+
+    if gitBranchExit != 0 && gitRemoteExit != 0
+      puts "  ✗ #{path}: exit code #{gitBranchExit}, #{gitRemoteExit}"
+      broken += 1
+    else
+      if branch == gitBranch[0]
+        if url == gitRemote[0]
+          puts "  ✓ #{path}"
+          ok += 1
+        else
+          puts "  ✗ #{path} -- expected url '#{url}' but was '#{gitRemote[0]}'"
+          broken +=1
+        end
+      else
+        puts "  ✗ #{path} -- expected branch '#{branch}' but was '#{gitBranch[0]}'"
+        broken +=1
+      end
+    end
+  end
+  puts "#{broken > 0 ? "✗" : "✓"} » #{ok} ok • #{broken} broken"
+end
+
 def command_add(url, path, branch='master')
   `git config -f #{$externals_file} --add external.#{path}.path #{path}`
   `git config -f #{$externals_file} --add external.#{path}.url #{url}`
@@ -103,6 +145,7 @@ load_configuration
 command=ARGV[0]
 
 case command
+when "status" then command_status
 when "add" then command_add ARGV[1], ARGV[2], ARGV[3] || "master"
 when "rm" then command_rm ARGV[1]
 when "init" then command_init
