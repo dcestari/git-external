@@ -16,7 +16,7 @@ def load_configuration
     lines = `git config -l -f #{$externals_file}`.split(/\n/)
     $configurations = {}
     lines.each do |line|
-      if line =~ /^external\.([^\.]+)\.([^=]+)=(.*)$/
+      if line =~ /^external\.([^$]+)\.([^=]+)=(.*)$/
         $configurations[$1.chomp] ||= {}
         $configurations[$1.chomp][$2.chomp] = $3.chomp
       end
