@@ -1,8 +1,11 @@
 class GitExternal
-  $root_dir       = `git rev-parse --show-toplevel`.chomp
-  $externals_file = "#{$root_dir}/.gitexternals"
-  $ignore_file    = "#{$root_dir}/.gitignore"
-  $configurations = {}
+
+  def initialize
+    @root_dir       = `git rev-parse --show-toplevel`.chomp
+    @externals_file = "#{@root_dir}/.gitexternals"
+    @ignore_file    = "#{@root_dir}/.gitignore"
+    @configurations = {}
+  end
 
   def usage
     puts "Usage: git external add <repository-url> <path> [<branch>]"
@@ -12,9 +15,9 @@ class GitExternal
   end
 
   def load_configuration
-    if File.file? $externals_file
-      lines = `git config -l -f #{$externals_file}`.split(/\n/)
-      $configurations = parse_configuration lines
+    if File.file? @externals_file
+      lines = `git config -l -f #{@externals_file}`.split(/\n/)
+      @configurations = parse_configuration lines
     end
   end
 
@@ -31,7 +34,7 @@ class GitExternal
   end
 
   def print_configuration
-    $configurations.each do |name, config|
+    @configurations.each do |name, config|
       puts name
       config.each do |key, value|
         puts "\t#{key}: #{value}"
@@ -76,36 +79,36 @@ class GitExternal
   end
 
   def command_add(url, path, branch='master')
-    `git config -f #{$externals_file} --add external.#{path}.path #{path}`
-    `git config -f #{$externals_file} --add external.#{path}.url #{url}`
-    `git config -f #{$externals_file} --add external.#{path}.branch #{branch}`
-    `echo "#{path}" >> #{$ignore_file}`
+    `git config -f #{@externals_file} --add external.#{path}.path #{path}`
+    `git config -f #{@externals_file} --add external.#{path}.url #{url}`
+    `git config -f #{@externals_file} --add external.#{path}.branch #{branch}`
+    `echo "#{path}" >> #{@ignore_file}`
   end
 
   def command_rm(path)
-    `git config -f #{$externals_file} --unset external.#{path}.path`
-    `git config -f #{$externals_file} --unset external.#{path}.url`
-    `git config -f #{$externals_file} --unset external.#{path}.branch`
-    `git config -f #{$externals_file} --remove-section external.#{path}`
-    `perl -pi -e 's/\\Q#{path.gsub(/\//, '\/')}\\E\n//g' #{$ignore_file}`
-    File.delete $externals_file if `wc -l #{$externals_file}`.chomp.to_i == 0
+    `git config -f #{@externals_file} --unset external.#{path}.path`
+    `git config -f #{@externals_file} --unset external.#{path}.url`
+    `git config -f #{@externals_file} --unset external.#{path}.branch`
+    `git config -f #{@externals_file} --remove-section external.#{path}`
+    `perl -pi -e 's/\\Q#{path.gsub(/\//, '\/')}\\E\n//g' #{@ignore_file}`
+    File.delete @externals_file if `wc -l #{@externals_file}`.chomp.to_i == 0
   end
 
   def command_init
-    $configurations.each do |name, config|
+    @configurations.each do |name, config|
       puts name
       init_external config["url"], config["path"], config["branch"]
     end
   end
 
   def command_update
-    $configurations.each do |name, config|
+    @configurations.each do |name, config|
       update_external config["url"], config["path"], config["branch"]
     end
   end
 
   def command_cmd(cmd)
-    $configurations.each do |name, config|
+    @configurations.each do |name, config|
       path = config['path']
       system("echo #{path}; cd #{path}; #{cmd}")
     end
