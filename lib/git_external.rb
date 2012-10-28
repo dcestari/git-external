@@ -14,14 +14,20 @@ class GitExternal
   def load_configuration
     if File.file? $externals_file
       lines = `git config -l -f #{$externals_file}`.split(/\n/)
-      $configurations = {}
-      lines.each do |line|
-        if line =~ /^external\.([^\.]+)\.([^=]+)=(.*)$/
-          $configurations[$1.chomp] ||= {}
-          $configurations[$1.chomp][$2.chomp] = $3.chomp
-        end
+      $configurations = parse_configuration lines
+    end
+  end
+
+  def parse_configuration(lines)
+    config = {}
+    lines.each do |line|
+      if line =~ /^external\.([^\.]+)\.([^=]+)=(.*)$/
+        config[$1.chomp] ||= {}
+        config[$1.chomp][$2.chomp] = $3.chomp
       end
     end
+
+    config
   end
 
   def print_configuration
