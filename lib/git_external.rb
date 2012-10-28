@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class GitExternal
 
   def initialize
@@ -62,17 +64,15 @@ class GitExternal
   end
 
   def init_external(url, path, branch='master')
-    require 'ftools'
     unless File.directory? "#{path}/.git"
-      File.makedirs File.dirname(path)
+      FileUtils.makedirs File.dirname(path)
       url = normalize_url url
       system "git clone #{url} #{path}"
-      system "cd #{path}; git checkout --track -b #{branch} origin/#{branch}"
+      system "cd #{path}; git checkout --track -b #{branch} origin/#{branch}" unless branch == 'master'
     end
   end
 
   def update_external(url, path, branch='master')
-    require 'ftools'
     if File.directory? "#{path}/.git"
      `cd #{path}; git pull origin #{branch}`
     end
