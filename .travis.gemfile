@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-group :test
+group :test do
   gem 'rake'
 end
 
