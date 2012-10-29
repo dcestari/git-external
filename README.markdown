@@ -1,5 +1,7 @@
 # git-external
 
+[![Build Status](https://secure.travis-ci.org/dcestari/git-external.png)](http://travis-ci.org/dcestari/git-external)
+
 Intends to provide an alternative to git-submodules but without being
 attach to an specific commit
 
