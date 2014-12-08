@@ -26,7 +26,7 @@ class GitExternal
   def parse_configuration(lines)
     config = {}
     lines.each do |line|
-      if line =~ /^external\.([^\.]+)\.([^=]+)=(.*)$/
+      if line =~ /^external\.(.*)\.(.*)=(.*)$/
         config[$1.chomp] ||= {}
         config[$1.chomp][$2.chomp] = $3.chomp
       end
